@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Task Pro - Login & Dashboard</title>
+
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #e0eafc, #cfdef3);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: #333;
+            transition: background 0.5s ease-in-out;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-sizing: border-box;
+            position: relative; 
+            z-index: 10;        
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            position: relative; 
+            z-index: 10;
+        }
+
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: white; margin-top: 15px; width: 100%; }
+        .btn:hover { opacity: 0.9; }
+
+        .bg-toggle-btn {
+            position: absolute;
+            top: 25px;          
+            right: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 100;       
+        }
+        .bg-toggle-btn:hover { background: #eee; }
+
+        .bg-input-box {
+            position: absolute;
+            top: 65px;          
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            display: none;
+            z-index: 99; 
+            border: 1px solid #e2e8f0;
+            width: 210px;       
+        }
+
+        .bg-input-box input {
+            padding: 6px;
+            font-size: 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 8px;
+        }
+
+        .bg-input-box button {
+            padding: 6px 10px;
+            font-size: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .login-card {
+            position: relative;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 380px;
+            width: 90%;
+            display: block; 
+        }
+
+        .login-card h2 { color: var(--dark); margin-bottom: 5px; }
+        .login-card p { color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
+        .login-card a { color: var(--primary); text-decoration: none; font-weight: bold; position: relative; z-index: 10; }
+        .login-card a:hover { text-decoration: underline; }
+        .error-message { color: var(--danger); font-size: 13px; margin-bottom: 15px; display: none; font-weight: bold; }
+
+        .dashboard-container {
+            position: relative;
+            width: 95%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            display: none; 
+            transition: background 0.2s ease; 
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 15px;
+            padding-right: 110px; 
+        }
+
+        .user-info { font-size: 14px; color: var(--dark); font-weight: bold; }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat-box {
+            background: #eef3f7;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            border: 1px solid #d6e4f0;
+        }
+        .stat-box h3 { margin: 0; font-size: 14px; color: #555; }
+        .stat-box p { margin: 10px 0 0; font-size: 28px; font-weight: bold; color: var(--primary); }
+
+        .main-stack-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            width: 100%;
+        }
+
+        .panel-box {
+            background: #eef3f7;
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid #d6e4f0;
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        .panel-title { 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-align: center; 
+            margin-bottom: 20px; 
+            color: var(--dark);
+        }
+
+        .task-columns-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr; 
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .task-col {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #cbd5e1;
+            display: flex;
+            flex-direction: column;
+            min-height: 150px;
+        }
+
+        .col-title {
+            margin: 0 0 15px 0;
+            font-size: 15px;
+            font-weight: bold;
+            border-bottom: 2px solid #cbd5e1;
+            padding-bottom: 8px;
+            text-align: center;
+        }
+
+        .task-list { 
+            list-style: none; 
+            padding: 0; 
+            margin: 0; 
+            max-height: 320px; 
+            overflow-y: auto; 
+            flex-grow: 1; 
+        }
+
+        .task-item {
+            background: white;
+            padding: 12px 16px;
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            box-sizing: border-box;
+            width: 100%;
+        }
+
+        .task-item .title {
+            font-size: 14px;
+            color: #1e293b;
+            line-height: 1.3;
+            word-break: break-word;
+        }
+
+        .task-item.completed { 
+            border-left-color: var(--success); 
+            opacity: 0.7; 
+        }
+
+        .task-item.completed .title { 
+            text-decoration: line-through; 
+            color: #64748b; 
+        }
+
+        .actions button { 
+            background: #f1f5f9; 
+            border: 1px solid #cbd5e1; 
+            border-radius: 6px;
+            cursor: pointer; 
+            font-size: 14px; 
+            padding: 5px 8px;
+            margin-left: 5px; 
+            transition: 0.2s;
+        }
+        .actions button:hover {
+            background: #e2e8f0;
+        }
+
+        @media (max-width: 768px) {
+            .stats-row, .task-columns-grid { grid-template-columns: 1fr; }
+            .header { padding-right: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="loginScreen" class="login-card">
+        
+        <div id="loginArea">
+            <h2>🔒 Login </h2>
+            <p>Silakan masuk atau daftar akun baru.</p>
+            <div id="errorMessage" class="error-message">❌ Username atau Password salah!</div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="username" class="form-control" placeholder="Masukkan username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Masukkan password" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px;">Masuk Aplikasi 🚪</button>
+            </form>
+            <p style="font-size: 13px; margin-top: 15px; display: flex; justify-content: space-between;">
+                <a href="#" onclick="switchForm('forgot')">Lupa Password? 🔑</a>
+                <a href="#" onclick="switchForm('register')">Daftar Akun Baru 📝</a>
+            </p>
+        </div>
+
+        <div id="registerArea" style="display: none;">
+            <h2>📝 Daftar Akun Baru</h2>
+            <p>Buat akun dan setel pertanyaan keamanan.</p>
+            <div id="regSuccessMessage" style="color: var(--success); font-size: 13px; margin-bottom: 15px; display: none; font-weight: bold;">✅ Pendaftaran Sukses!</div>
+            <div id="regErrorMessage" class="error-message">❌ Username sudah terdaftar!</div>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>Username Baru</label>
+                    <input type="text" id="regUsername" class="form-control" placeholder="Buat username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password Baru</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="Buat password" required>
+                </div>
+                <div class="form-group">
+                    <label>Pertanyaan Keamanan (Untuk Reset)</label>
+                    <select id="regQuestion" class="form-control" required>
+                        <option value="Nama hewan peliharaan pertama?">Nama hewan peliharaan pertama?</option>
+                        <option value="Apa nama sekolah SD kamu dulu?">Apa nama sekolah SD kamu dulu?</option>
+                        <option value="Siapa nama guru favoritmu?">Siapa nama guru favoritmu?</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Jawaban</label>
+                    <input type="text" id="regAnswer" class="form-control" placeholder="Jawaban kamu" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="background-color: var(--success); margin-top: 10px;">Daftar Akun 💾</button>
+            </form>
+            <p style="font-size: 13px; margin-top: 15px;"><a href="#" onclick="switchForm('login')">Kembali ke Login</a></p>
+        </div>
+
+        <div id="forgotArea" style="display: none;">
+            <h2>🔑 Pemulihan Akun</h2>
+            <p>Masukkan username untuk melihat pertanyaan keamanan.</p>
+            <div id="forgotErrorMessage" class="error-message">❌ Username tidak ditemukan!</div>
+            
+            <div id="forgotStep1">
+                <div class="form-group">
+                    <label>Masukkan Username Kamu</label>
+                    <input type="text" id="forgotUsername" class="form-control" placeholder="Contoh: manda">
+                </div>
+                <button type="button" class="btn btn-primary" onclick="checkUsernameForgot()">Cari Akun 🔍</button>
+            </div>
+
+            <div id="forgotStep2" style="display: none; text-align: left; margin-top: 15px;">
+                <p style="font-weight: bold; color: var(--dark); font-size: 14px;" id="displaySecurityQuestion">Pertanyaan: ...?</p>
+                <div class="form-group">
+                    <label>Jawaban Kamu</label>
+                    <input type="text" id="forgotAnswer" class="form-control" placeholder="Masukkan jawaban anda">
+                </div>
+                <button type="button" class="btn btn-primary" style="background-color: var(--warning);" onclick="verifyForgotAnswer()">Verifikasi Jawaban 🔑</button>
+                
+                <div id="passwordRevealBox" style="margin-top: 15px; padding: 10px; background: #eef3f7; border-left: 5px solid var(--success); display: none;">
+                    <span style="font-size: 13px; display: block;">Password Kamu Adalah:</span>
+                    <strong style="font-size: 18px; color: var(--dark);" id="revealedPassword">XXXXX</strong>
+                </div>
+            </div>
+            <p style="font-size: 13px; margin-top: 20px;"><a href="#" onclick="switchForm('login')">Kembali ke Login</a></p>
+        </div>
+
+        <button class="bg-toggle-btn" onclick="toggleBgInput('loginBgInput')">🎨 Bg</button>
+        <div id="loginBgInput" class="bg-input-box">
+            <input type="text" id="loginBgUrl" placeholder="Masukkan URL Gambar...">
+            <button onclick="changeBackground('loginBgUrl')">Terapkan</button>
+        </div>
+    </div>
+
+    <div id="mainDashboard" class="dashboard-container">
+        
+        <button class="bg-toggle-btn" onclick="toggleBgInput('dashBgInput')">🎨 Bg</button>
+        <div id="dashBgInput" class="bg-input-box">
+            <input type="text" id="dashBgUrl" placeholder="Masukkan URL Gambar...">
+            <button onclick="changeBackground('dashBgUrl')">Terapkan</button>
+            
+            <div style="margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; text-align: left;">
+                <label style="font-size: 11px; font-weight: bold; display: block; margin-bottom: 3px;">Keburaman Dashboard:</label>
+                <input type="range" id="opacitySlider" min="10" max="100" value="95" oninput="changeOpacity(this.value)" style="width: 100px; cursor: pointer;">
+                <span id="opacityVal" style="font-size: 11px; color: #666;">95%</span>
+            </div>
+        </div>
+
+        <div class="header">
+            <div>
+                <h2>📚 Dashboard Tugas Belajar</h2>
+                <div class="user-info">Halo, <span id="displayUser" style="color: var(--primary);">User</span> 👋</div>
+            </div>
+            <button class="btn btn-danger" onclick="logoutAplikasi()">Keluar 🚪</button>
+        </div>
+
+        <div class="stats-row">
+            <div class="stat-box"><h3>Total Tugas</h3><p id="totalCount">0</p></div>
+            <div class="stat-box"><h3>Selesai</h3><p id="doneCount" style="color: var(--success);">0</p></div>
+            <div class="stat-box"><h3>Belum Selesai</h3><p id="pendingCount" style="color: var(--danger);">0</p></div>
+        </div>
+
+        <div class="main-stack-layout">
+            
+            <div class="panel-box">
+                <div class="panel-title" style="text-align: left;">➕ Tambah Tugas Baru</div>
+                <form id="taskForm">
+                    <div class="form-group">
+                        <label>Judul Mata Pelajaran / Tugas</label>
+                        <input type="text" id="title" class="form-control" required placeholder="Contoh: Pemrograman Web">
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi Tugas</label>
+                        <input type="text" id="desc" class="form-control" placeholder="Contoh: Membuat form validasi">
+                    </div>
+                    <div class="form-group">
+                        <label>Tanggal Tenggat (Deadline)</label>
+                        <input type="date" id="deadline" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: auto; padding: 10px 30px; margin-top: 5px;">Simpan Tugas 📥</button>
+                </form>
+            </div>
+
+            <div class="panel-box">
+                <div class="panel-title">📋 Daftar Tugas </div>
+                
+                <div class="task-columns-grid">
+                    
+                    <div class="task-col">
+                        <h4 class="col-title">⏳ Belum Selesai</h4>
+                        <ul id="taskListPending" class="task-list"></ul>
+                    </div>
+                    
+                    <div class="task-col">
+                        <h4 class="col-title" style="color: var(--success);">✅ Sudah Selesai</h4>
+                        <ul id="taskListCompleted" class="task-list"></ul>
+                    </div>
+
+                </div>
+
+                <button type="button" id="resetBtn" class="btn btn-warning" onclick="resetSemuaTugas()">💥 Reset Semua Tugas</button>
+            </div>
+
+        <script>
+        // 1. DATABASE LOKAL (LocalStorage)
+        let users = JSON.parse(localStorage.getItem('study_users')) || [
+            { username: "admin", password: "12345", question: "Nama hewan peliharaan pertama?", answer: "kucing" } 
+        ];
+        let allTasks = JSON.parse(localStorage.getItem('pro_study_tasks_multi')) || [];
+        let currentUser = "";
+        let accountFound = null;
+
+        // FUNGSI OTOMATIS: Berjalan saat pertama kali web dibuka
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedBg = localStorage.getItem('custom_bg_url');
+            if (savedBg) {
+                document.body.style.backgroundImage = `url('${savedBg}')`;
+            }
+
+            const savedOpacity = localStorage.getItem('dashboard_opacity');
+            if (savedOpacity) {
+                changeOpacity(savedOpacity);
+                const slider = document.getElementById('opacitySlider');
+                if (slider) slider.value = savedOpacity;
+            }
+        });
+
+        // 2. FITUR BACKGROUND & KEBURAMAN
+        function toggleBgInput(id) {
+            const box = document.getElementById(id);
+            if (box) {
+                box.style.display = box.style.display === 'block' ? 'none' : 'block';
+            }
+        }
+
+        function changeBackground(inputId) {
+            const urlInput = document.getElementById(inputId).value.trim();
+            if (urlInput) {
+                const imgTester = new Image();
+                imgTester.src = urlInput;
+                imgTester.onload = function() {
+                    document.body.style.backgroundImage = `url('${urlInput}')`;
+                    localStorage.setItem('custom_bg_url', urlInput);
+                    if(document.getElementById('loginBgInput')) document.getElementById('loginBgInput').style.display = 'none';
+                    if(document.getElementById('dashBgInput')) document.getElementById('dashBgInput').style.display = 'none';
+                };
+                imgTester.onerror = function() {
+                    alert("Link gambar rusak! Gunakan link berakhiran .jpg atau .png");
+                    document.body.style.backgroundImage = "linear-gradient(135deg, #e0eafc, #cfdef3)";
+                };
+            } else {
+                alert("Silakan masukkan URL gambar terlebih dahulu!");
+            }
+        }
+
+        function changeOpacity(val) {
+            const alpha = val / 100;
+            const dashboard = document.getElementById('mainDashboard');
+            if (dashboard) dashboard.style.backgroundColor = `rgba(255, 255, 255, ${alpha})`;
+            const opText = document.getElementById('opacityVal');
+            if (opText) opText.textContent = val + '%';
+            localStorage.setItem('dashboard_opacity', val);
+        }
+
+        // 3. LOGIKA FORM LOGIN, REGISTER & LUPA PASSWORD
+        function switchForm(type) {
+            document.getElementById('loginArea').style.display = 'none';
+            document.getElementById('registerArea').style.display = 'none';
+            document.getElementById('forgotArea').style.display = 'none';
+
+            if (type === 'register') {
+                document.getElementById('registerArea').style.display = 'block';
+            } else if (type === 'forgot') {
+                document.getElementById('forgotArea').style.display = 'block';
+                resetForgotForm(); 
+            } else {
+                document.getElementById('loginArea').style.display = 'block';
+            }
+
+            if(document.getElementById('errorMessage')) document.getElementById('errorMessage').style.display = 'none';
+            if(document.getElementById('regErrorMessage')) document.getElementById('regErrorMessage').style.display = 'none';
+            if(document.getElementById('regSuccessMessage')) document.getElementById('regSuccessMessage').style.display = 'none';
+        }
+
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const regUser = document.getElementById('regUsername').value.trim();
+            const regPass = document.getElementById('regPassword').value;
+            const regQues = document.getElementById('regQuestion').value;
+            const regAns = document.getElementById('regAnswer').value.trim().toLowerCase();
+
+            const isExist = users.some(u => u.username.toLowerCase() === regUser.toLowerCase());
+
+            if (isExist) {
+                document.getElementById('regErrorMessage').style.display = 'block';
+                document.getElementById('regSuccessMessage').style.display = 'none';
+            } else {
+                users.push({ username: regUser, password: regPass, question: regQues, answer: regAns });
+                localStorage.setItem('study_users', JSON.stringify(users));
+                document.getElementById('regErrorMessage').style.display = 'none';
+                document.getElementById('regSuccessMessage').style.display = 'block';
+                document.getElementById('registerForm').reset();
+                setTimeout(() => { switchForm('login'); }, 1500);
+            }
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            const userInp = document.getElementById('username').value.trim();
+            const passInp = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            const validUser = users.find(u => u.username === userInp && u.password === passInp);
+
+            if (validUser) {
+                if(errorDiv) errorDiv.style.display = 'none'; 
+                currentUser = userInp; 
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('mainDashboard').style.display = 'block';
+                document.getElementById('displayUser').textContent = userInp;
+                renderApp(); 
+            } else {
+                if(errorDiv) errorDiv.style.display = 'block'; 
+            }
+        });
+
+        function resetForgotForm() {
+            accountFound = null;
+            document.getElementById('forgotUsername').value = "";
+            document.getElementById('forgotAnswer').value = "";
+            if(document.getElementById('forgotErrorMessage')) document.getElementById('forgotErrorMessage').style.display = 'none';
+            document.getElementById('forgotStep1').style.display = 'block';
+            document.getElementById('forgotStep2').style.display = 'none';
+            document.getElementById('passwordRevealBox').style.display = 'none';
+        }
+
+        function checkUsernameForgot() {
+            const inputUser = document.getElementById('forgotUsername').value.trim();
+            const errorDiv = document.getElementById('forgotErrorMessage');
+            accountFound = users.find(u => u.username.toLowerCase() === inputUser.toLowerCase());
+
+            if (accountFound) {
+                if(errorDiv) errorDiv.style.display = 'none';
+                document.getElementById('forgotStep1').style.display = 'none'; 
+                document.getElementById('forgotStep2').style.display = 'block'; 
+                document.getElementById('displaySecurityQuestion').textContent = `Pertanyaan: "${accountFound.question}"`;
+            } else {
+                if(errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = "❌ Username tidak ditemukan!";
+                }
+            }
+        }
+
+        function verifyForgotAnswer() {
+            const inputAns = document.getElementById('forgotAnswer').value.trim().toLowerCase();
+            const errorDiv = document.getElementById('forgotErrorMessage');
+
+            if (accountFound && inputAns === accountFound.answer) {
+                if (errorDiv) errorDiv.style.display = 'none';
+                const revealBox = document.getElementById('passwordRevealBox');
+                if (revealBox) revealBox.style.display = 'block';
+                const textPass = document.getElementById('revealedPassword');
+                if (textPass) textPass.textContent = accountFound.password;
+            } else {
+                alert("❌ Jawaban salah! Gagal memulihkan password.");
+                if (errorDiv) {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = "❌ Jawaban pemulihan salah!";
+                }
+            }
+        }
+
+        function logoutAplikasi() {
+            currentUser = ""; 
+            document.getElementById('loginForm').reset();
+            if(document.getElementById('errorMessage')) document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('mainDashboard').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'block';
+        }
+
+        // 4. MANAJEMEN TUGAS USER DENGAN 2 KOLOM (BARU)
+        function renderApp() {
+            const listPending = document.getElementById('taskListPending');
+            const listCompleted = document.getElementById('taskListCompleted');
+            if (!listPending || !listCompleted) return;
+            
+            listPending.innerHTML = ''; 
+            listCompleted.innerHTML = ''; 
+            
+            const userTasks = allTasks.filter(task => task.user === currentUser);
+            
+            userTasks.forEach((task) => {
+                const globalIndex = allTasks.findIndex(t => t === task);
+                const li = document.createElement('li');
+                li.className = `task-item ${task.completed ? 'completed' : ''}`;
+                
+                if (!task.completed) {
+                    li.innerHTML = `
+                        <div>
+                            <div class="title"><strong>${task.title}</strong></div>
+                            <div style="font-size: 12px; color: #555; margin: 3px 0;">${task.desc}</div>
+                            <div style="font-size: 11px; color: #e74c3c; font-weight: bold;">📅 Deadline: ${task.deadline}</div>
+                        </div>
+                        <div class="actions">
+                            <button type="button" onclick="toggleTask(${globalIndex})" title="Tandai Selesai">✅</button>
+                            <button type="button" onclick="deleteTask(${globalIndex})" title="Hapus">🗑️</button>
+                        </div>
+                    `;
+                    listPending.appendChild(li); 
+                } else {
+                    li.innerHTML = `
+                        <div>
+                            <div class="title"><strong>${task.title}</strong></div>
+                            <div style="font-size: 12px; color: #7f8c8d; margin: 3px 0; text-decoration: line-through;">${task.desc}</div>
+                        </div>
+                        <div class="actions">
+                            <button type="button" onclick="toggleTask(${globalIndex})" title="Kembalikan ke Proses">🔄</button>
+                            <button type="button" onclick="deleteTask(${globalIndex})" title="Hapus Permanen">🗑️</button>
+                        </div>
+                    `;
+                    listCompleted.appendChild(li); 
+                }
+            });
+
+            document.getElementById('totalCount').textContent = userTasks.length;
+            document.getElementById('doneCount').textContent = userTasks.filter(t => t.completed).length;
+            document.getElementById('pendingCount').textContent = userTasks.filter(t => !t.completed).length;
+
+            localStorage.setItem('pro_study_tasks_multi', JSON.stringify(allTasks));
+        }
+
+        document.getElementById('taskForm').addEventListener('submit', (e) => {
+            e.preventDefault(); 
+            const newTask = {
+                user: currentUser, 
+                title: document.getElementById('title').value,
+                desc: document.getElementById('desc').value,
+                deadline: document.getElementById('deadline').value,
+                completed: false
+            };
+            allTasks.push(newTask); 
+            renderApp();         
+            document.getElementById('taskForm').reset(); 
+        });
+
+        function toggleTask(globalIndex) {
+            allTasks[globalIndex].completed = !allTasks[globalIndex].completed; 
+            renderApp();
+        }
+
+        function deleteTask(globalIndex) {
+            if (confirm("Hapus tugas ini dari daftar kelompokmu?")) {
+                allTasks.splice(globalIndex, 1); 
+                renderApp();
+            }
+        }
+
+        function resetSemuaTugas() {
+            if (confirm(`Apakah kamu yakin ingin mereset dan menghapus SEMUA tugas milik akun ${currentUser}?`)) {
+                allTasks = allTasks.filter(task => task.user !== currentUser);
+                renderApp(); 
+            }
+        }
+    </script>
+</body>
+</html>
